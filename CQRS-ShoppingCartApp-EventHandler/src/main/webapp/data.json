@@ -1,0 +1,29 @@
+{
+  "results": [
+    {
+      "id": "1",
+      "name": "Nephrolepis",  
+      "category": "pianta da interno",
+      "price": "10E",
+      "availability" : 8,
+      "description": "Nephrolepis obliterata prefer bright, but indirect sunlight. Temperatures between 60 °F and 75 °F are best. Nephrolepis obliterata is sensitive to both too little and too much water, so water the plant well but permit the soil to dry out between waterings. Nephrolepis obliterata has the added benefit of reducing indoor air pollution, particularly formaldehyde, xylene, and toluene.[4]",
+      "image": "cqrs-immagini/nephrolepis-pflanze__0159334_PE315853_S4.JPG"
+    },{
+      "id": "2",
+      "name": "monstera",
+      "category": "pianta da interno",
+      "price": "10E",
+      "availability" : 10,
+      "description": "Members of the genus are classed as half-hardy. They thrive in cool-temperate climates and are used as summer bedding and in mild coastal areas where they may be grown as border plants. For several species, the seeds should be sown in spring. Half-harden cuttings should be taken in need bottom heat. They do best in loam-based gritty compost and positioned in full sun.",
+      "image": "cqrs-immagini/PIANTE DA INTERNO_MONSTERA_468.JPG"
+    },{
+      "id": "3",
+      "name": "white gardenia",
+      "category": "pianta da interno",
+      "price": "10E",
+      "availability" : 10,
+      "description": "Gardenia plants are prized for the strong sweet scent of their flowers, which can be very large in size in some species. Gardenia jasminoides (syn. G. grandiflora, G. Florida) is cultivated as a house plant. This species can be difficult to grow because it originated in warm humid tropical areas. It demands high humidity to thrive, and bright (not direct) light. It flourishes in acidic soils with good drainage and thrives on [68-74 F temperatures (20-23 C)][5] during the day and 60 F (15-16 C) in the evening. Potting soils developed especially for gardenias are available. G. jasminoides grows no larger than 18 inches in height and width when grown indoors. In climates where it can be grown outdoors, it can attain a height of 6 feet. If water touches the flowers, they will turn brown",
+      "image": "cqrs-immagini/P36-Pianta-di-gardenia-bianca.jpg"
+    }    
+  ]
+}

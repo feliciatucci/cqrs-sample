@@ -1,0 +1,21 @@
+{
+  "results": [
+    {
+      "id": "1",
+      "name": "monstera",
+      "category": "pianta da interno",
+      "price": "10E",
+      "description": "Members of the genus are classed as half-hardy. They thrive in cool-temperate climates and are used as summer	bedding and in mild coastal areas where they may be grown as border plants. For several species, the seeds should be sown in spring. Half-harden cuttings should be taken in summer but need bottom heat. They do best in loam-based gritty compost and positioned in full sun.",
+      "image": "cqrs-immagini/PIANTE DA INTERNO_MONSTERA_468.JPG"
+      
+    },{
+      "id": "1",
+      "name": "monstera",
+      "category": "pianta da interno",
+      "price": "10E",
+      "description": "Members of the genus are classed as half-hardy. They thrive in cool-temperate climates and are used as summer	bedding and in mild coastal areas where they may be grown as border plants. For several species, the seeds should be sown in spring. Half-harden cuttings should be taken in summer but need bottom heat. They do best in loam-based gritty compost and positioned in full sun.",
+      "image": "cqrs-immagini/PIANTE DA INTERNO_MONSTERA_468.JPG"
+      
+    }  
+  ]
+}

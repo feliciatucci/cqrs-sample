@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "key": "First",
+      "value": 100
+    },{
+      "key": "Second",
+      "value": false
+    },{
+      "key": "Last",
+      "value": "Mixed"
+    }
+  ],
+  "obj": {
+    "number": 1.2345e-6,
+    "enabled": true
+  },
+  "message": "Strings have to be in double-quotes."
+}
