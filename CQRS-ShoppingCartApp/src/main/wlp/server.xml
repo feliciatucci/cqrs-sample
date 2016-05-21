@@ -10,6 +10,6 @@
         <tcpOptions soReuseAddr="true"/>
     </httpEndpoint>
 
-    <application name="CQRS-ShoppingCartApp" context-root="/cqrs-sample" location="${appLocation}" type="war"/>
+    <application name="cqrs-sample" context-root="/cqrs-sample" location="${appLocation}" type="war"/>
 
 </server>

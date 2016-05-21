@@ -1,4 +1,4 @@
-package cqrs.example.shoppingcart.test;
+package cqrs.example.shoppingcart.model;
 /**
  * Copyright 2016 IBM Corp. All Rights Reserved.
  *
@@ -15,30 +15,28 @@ package cqrs.example.shoppingcart.test;
  * limitations under the License.
  */
 
-import org.axonframework.test.FixtureConfiguration;
-import org.axonframework.test.Fixtures;
-import org.junit.Before;
-import org.junit.Test;
+import org.axonframework.commandhandling.annotation.CommandHandler;
+import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
+import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
 
 import cqrs.example.shoppingcart.command.AddItemCommand;
 import cqrs.example.shoppingcart.event.ItemAddedEvent;
-import cqrs.example.shoppingcart.model.ShoppingCart;
 
-public class ShoppingCartTest {
+public class ShoppingCart extends AbstractAnnotatedAggregateRoot {
 	 
-    private FixtureConfiguration<ShoppingCart> fixture;
+    @AggregateIdentifier
+    private String id;
  
-    @Before
-    public void setUp() throws Exception {
-        fixture = Fixtures.newGivenWhenThenFixture(ShoppingCart.class);
+    public ShoppingCart() {
     }
-    
-    @Test
-    public void testCreateToDoItem() throws Exception {
-        fixture.given()
-               .when(new AddItemCommand("exam1"))
-               .expectEvents(new ItemAddedEvent("exam1"));
+ 
+    @CommandHandler
+    public ShoppingCart(AddItemCommand command) {
+    	id=command.getItemId();
+    	//put here the business logic
+    	//....
+    	
+        apply(new ItemAddedEvent(command.getItemId()));
     }
-     
-    
+ 
 }

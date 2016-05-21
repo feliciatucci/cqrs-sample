@@ -1,5 +1,5 @@
 applications:
-- path: target/JavaHelloWorldApp.war
+- path: target/CQRS-ShoppingCartApp-EventHandler.war
   memory: 512M
   instances: 1
   domain: eu-gb.mybluemix.net

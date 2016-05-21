@@ -10,6 +10,6 @@
         <tcpOptions soReuseAddr="true"/>
     </httpEndpoint>
 
-    <application name="JavaHelloWorldApp" context-root="/JavaHelloWorldApp" location="${appLocation}" type="war"/>
+    <application name="CQRS-ShoppingCartApp-EventHandler" context-root="/cqrs-sample-event" location="${appLocation}" type="war"/>
 
 </server>

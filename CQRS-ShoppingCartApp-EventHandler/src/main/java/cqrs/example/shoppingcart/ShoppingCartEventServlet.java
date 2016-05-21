@@ -67,7 +67,7 @@ public class ShoppingCartEventServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
        super.init(config);
 
-       ac = new ClassPathXmlApplicationContext("/eventHandler-configuration.xml");
+       ac = new ClassPathXmlApplicationContext("/axon-db2-configuration.xml");
        
        logger.debug("sono nella init della servlet");
        

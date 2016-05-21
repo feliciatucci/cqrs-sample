@@ -58,8 +58,7 @@ public class ShoppingCartServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         String itemId=request.getParameter("id");
-//        Integer quantity=Integer.parseInt(request.getParameter("quantity"));
-        Integer quantity = 1;
+        Integer quantity=Integer.parseInt(request.getParameter("quantity"));
         AddItemCommand addItemCommand=new AddItemCommand(itemId);
         addItemCommand.setQuantity(quantity);
         
@@ -85,7 +84,7 @@ public class ShoppingCartServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
        super.init(config);
 
-       ac = new ClassPathXmlApplicationContext("/demo-configuration.xml");
+       ac = new ClassPathXmlApplicationContext("/axon-db2-configuration.xml");
        
        logger.debug("sono nella init della servlet");
        

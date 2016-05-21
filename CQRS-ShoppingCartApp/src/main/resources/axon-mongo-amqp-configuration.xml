@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:axon="http://www.axonframework.org/schema/core"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xmlns:axon-amqp="http://www.axonframework.org/schema/amqp"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        				   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.axonframework.org/schema/core http://www.axonframework.org/schema/axon-core-2.4.xsd
+                           http://www.springframework.org/schema/tx
+						   http://www.springframework.org/schema/tx/spring-tx-4.1.xsd 
+						   http://www.axonframework.org/schema/amqp http://www.axonframework.org/schema/axon-amqp.xsd
+            http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
+ 
+  
+   <context:annotation-config/>
+
+    <!-- Define an command bus -->
+    <axon:command-bus id="commandBus"/>
+     
+    <!-- Define an event bus -->
+    <axon:event-bus id="eventBus" terminal="terminal"/>
+    
+    <rabbit:fanout-exchange id="eventBusExchange" name="${axon.rabbitmq.exchange}">
+		<rabbit:bindings>
+			<rabbit:binding queue="eventBusQueue" />
+		</rabbit:bindings>
+	</rabbit:fanout-exchange>
+
+	<rabbit:admin id="rabbitAdmin" auto-startup="true" connection-factory="amqpConnectionFactory" />
+
+	<axon-amqp:terminal id="terminal" exchange-name="${axon.rabbitmq.exchange}" 
+		connection-factory="amqpConnectionFactory" serializer="eventSerializer" >
+		<axon-amqp:default-configuration
+			transaction-manager="transactionManager" transaction-size="25" 
+			prefetch="200" error-handler="loggingErrorHandler" />
+	</axon-amqp:terminal>
+	
+		
+    <rabbit:connection-factory id="amqpConnectionFactory"
+		host="${axon.rabbitmq.host}" 
+		port="${axon.rabbitmq.port}" 
+		username="${axon.rabbitmq.username}"
+		password="${axon.rabbitmq.password}" 
+		channel-cache-size="5"  />
+		
+	
+		<rabbit:queue id="eventBusQueue" name="${axon.rabbitmq.cluster.queue.name}">
+	</rabbit:queue>
+				
+	<bean id="transactionManager"
+		class="org.springframework.amqp.rabbit.transaction.RabbitTransactionManager">
+		<property name="connectionFactory" ref="amqpConnectionFactory"   />
+	</bean>
+	
+
+	<axon:cluster id="defaultCluster" default="true" >
+		<axon:meta-data>
+			<entry key="AMQP.Config">
+				<axon-amqp:configuration transaction-manager="transactionManager"  transaction-size="2" queue-name="${axon.rabbitmq.cluster.queue.name}" exclusive="false"/>
+			</entry>
+		</axon:meta-data>
+	</axon:cluster>
+
+
+	<axon-amqp:terminal id="terminal" exchange-name="${axon.rabbitmq.exchange}" 
+		connection-factory="amqpConnectionFactory" serializer="eventSerializer" transactional="false">
+		<axon-amqp:default-configuration
+			transaction-manager="transactionManager" transaction-size="25" 
+			prefetch="200" error-handler="loggingErrorHandler"  acknowledge="auto" concurrency="1" />
+	</axon-amqp:terminal>
+
+
+    <!-- We need a thread pool to execute tasks -->
+    <bean id="asyncExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
+        <property name="corePoolSize" value="1"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="true"/>
+    </bean>
+
+
+ 
+    <axon:event-sourcing-repository id="shoppingcartRepository" 
+                                    aggregate-type="com.cqrs.example.shoppingcart.model.ShoppingCart"/>
+ 
+    <axon:aggregate-command-handler id="ShoppingCartHandler"
+                                    aggregate-type="com.cqrs.example.shoppingcart.model.ShoppingCart"
+                                    repository="shoppingcartRepository"                                  
+                                    command-bus="commandBus" />
+ 
+    <!-- Axon Event store -->
+    <bean id="eventStore" class="org.axonframework.eventstore.mongo.MongoEventStore" lazy-init="true">
+        <constructor-arg ref="mongoTemplate"/>
+    </bean>
+
+    <!-- Infrastructure Mongo -->
+    <bean id="mongoTemplate" class="org.axonframework.eventstore.mongo.DefaultMongoTemplate">
+        <constructor-arg ref="mongoDb"/>
+    </bean>
+
+   <bean id="mongoDb" class="com.mongodb.Mongo" factory-bean="mongoFactoryBean" factory-method="createMongo"
+          lazy-init="true"/>
+
+    <bean id="mongoFactoryBean" class="org.axonframework.eventstore.mongo.MongoFactory" lazy-init="true">
+        <property name="mongoOptions">
+            <bean class="com.mongodb.MongoOptions" factory-bean="mongoOptionsFactory"
+                  factory-method="createMongoOptions"/>
+        </property>
+        <property name="mongoAddresses">
+            <list value-type="com.mongodb.ServerAddress">
+                <bean class="com.mongodb.ServerAddress">
+                    <constructor-arg index="0" value="172.17.0.4"/>
+                    <constructor-arg index="1" value="27017"/>
+                </bean>
+            </list>
+        </property>
+        
+    </bean>
+
+   <bean id="mongoOptionsFactory" class="org.axonframework.eventstore.mongo.MongoOptionsFactory">
+        <property name="connectionsPerHost" value="100"/>
+    </bean>
+
+    <bean class="org.axonframework.commandhandling.gateway.CommandGatewayFactoryBean">
+        <property name="commandBus" ref="commandBus"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="classpath:configuration.properties"/>
+    </bean>
+
+    <bean id="eventSerializer" class="org.axonframework.serializer.xml.XStreamSerializer"/>
+
+    <bean id="loggingErrorHandler"
+		class="org.springframework.scheduling.support.TaskUtils$LoggingErrorHandler" />
+    
+    
+<!-- Enable annotation support to automatically register @EventHandler annotated beans -->
+<!-- <axon:annotation-config /> -->
+
+
+    <bean class="org.axonframework.eventhandling.annotation.AnnotationEventListenerBeanPostProcessor"> 
+        <property name="eventBus" ref="eventBus"/>
+    </bean>
+
+ <!-- And we define our event listener beans -->
+    <bean class="com.cqrs.example.shoppingcart.eventhandler.ShoppingCartEventListener"/>
+
+
+	<bean class="org.axonframework.commandhandling.annotation.AnnotationCommandHandlerBeanPostProcessor">
+        <property name="commandBus" ref="commandBus"/>
+    </bean>
+
+<bean class="com.cqrs.example.shoppingcart.model.ShoppingCart"/>
+
+</beans>
